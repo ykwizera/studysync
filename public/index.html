@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Session Scheduler</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div id="app">
+    <!-- App content will be dynamically loaded here -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <!-- Templates -->
+  <!-- Login Template -->
+  <template id="login-template">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>Study Session Scheduler</h1>
+          <p>Sign in to your account</p>
+        </div>
+        <form id="login-form" class="auth-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Sign In</button>
+          </div>
+          <div class="auth-links">
+            <p>Don't have an account? <a href="#" id="register-link">Register</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </template>
+
+  <!-- Register Template -->
+  <template id="register-template">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h1>Study Session Scheduler</h1>
+          <p>Create a new account</p>
+        </div>
+        <form id="register-form" class="auth-form">
+          <div class="form-group">
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <input type="email" id="reg-email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-username">Username</label>
+            <input type="text" id="reg-username" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <input type="password" id="reg-password" name="password" required>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+          <div class="auth-links">
+            <p>Already have an account? <a href="#" id="login-link">Login</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </template>
+
+  <!-- Dashboard Template -->
+  <template id="dashboard-template">
+    <div class="dashboard">
+      <header class="main-header">
+        <div class="header-content">
+          <h1>Study Session Scheduler</h1>
+          <div class="user-menu">
+            <span id="user-name"></span>
+            <div class="online-indicator" id="online-status">
+              <div class="online-dot"></div>
+              <span class="online-text">Online</span>
+            </div>
+            <button id="logout-btn" class="btn btn-small">Logout</button>
+          </div>
+        </div>
+      </header>
+      
+      <div class="main-container">
+        <nav class="sidebar">
+          <ul class="nav-menu">
+            <li class="nav-item active" data-page="groups">
+              <a href="#"><i class="fas fa-users"></i> Study Groups</a>
+            </li>
+            <li class="nav-item" data-page="calendar">
+              <a href="#"><i class="fas fa-calendar-alt"></i> Calendar</a>
+            </li>
+            <li class="nav-item" data-page="files">
+              <a href="#"><i class="fas fa-file-alt"></i> Files</a>
+            </li>
+            <li class="nav-item" data-page="progress">
+              <a href="#"><i class="fas fa-chart-line"></i> Progress</a>
+            </li>
+          </ul>
+        </nav>
+        
+        <main class="content" id="main-content">
+          <!-- Content will be loaded here -->
+        </main>
+      </div>
+    </div>
+  </template>
+
+  <!-- Study Groups Template -->
+  <template id="groups-template">
+    <div class="page-header">
+      <h2>My Study Groups</h2>
+      <button id="create-group-btn" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Create Group
+      </button>
+    </div>
+    
+    <div class="groups-container" id="groups-list">
+      <!-- Groups will be loaded here -->
+      <div class="empty-state" id="empty-groups">
+        <i class="fas fa-users"></i>
+        <p>You haven't joined any study groups yet</p>
+        <button id="empty-create-group-btn" class="btn btn-primary">Create your first group</button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Group Card Template -->
+  <template id="group-card-template">
+    <div class="group-card">
+      <div class="group-card-header">
+        <h3 class="group-name"></h3>
+        <span class="group-subject"></span>
+      </div>
+      <div class="group-card-body">
+        <div class="group-info">
+          <div class="info-item">
+            <i class="fas fa-users"></i>
+            <span class="member-count"></span> members
+          </div>
+          <div class="info-item">
+            <i class="fas fa-calendar-day"></i>
+            <span class="next-session"></span>
+          </div>
+        </div>
+      </div>
+      <div class="group-card-footer">
+        <button class="btn btn-primary view-group-btn">View Group</button>
+      </div>
+    </div>
+  </template>
+
+  <!-- Create Group Modal Template -->
+  <template id="create-group-modal-template">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Create New Study Group</h3>
+          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <form id="create-group-form">
+            <div class="form-group">
+              <label for="group-name">Group Name</label>
+              <input type="text" id="group-name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="group-subject">Subject/Course</label>
+              <input type="text" id="group-subject" name="subject" required>
+            </div>
+            <div class="form-group">
+              <label for="group-description">Description</label>
+              <textarea id="group-description" name="description" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
+          <button class="btn btn-primary" id="submit-group-btn">Create Group</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Group Details Template -->
+  <template id="group-details-template">
+    <div class="group-details">
+      <div class="group-header">
+        <div class="back-button">
+          <a href="#" id="back-to-groups"><i class="fas fa-arrow-left"></i> Back to Groups</a>
+        </div>
+        <h2 class="group-title"></h2>
+        <p class="group-description"></p>
+      </div>
+      
+      <div class="group-actions">
+        <button id="schedule-session-btn" class="btn btn-primary">
+          <i class="fas fa-calendar-plus"></i> Schedule Session
+        </button>
+        <button id="share-files-btn" class="btn btn-secondary">
+          <i class="fas fa-file-upload"></i> Share Files
+        </button>
+        <button id="chat-btn" class="btn btn-secondary">
+          <i class="fas fa-comments"></i> Group Chat
+        </button>
+      </div>
+      
+      <div class="group-section">
+        <h3><i class="fas fa-calendar-alt"></i> Upcoming Sessions</h3>
+        <div id="sessions-list" class="sessions-container">
+          <!-- Sessions will be loaded here -->
+          <div class="empty-state" id="empty-sessions">
+            <i class="fas fa-calendar-alt"></i>
+            <p>No upcoming sessions scheduled</p>
+            <button id="empty-schedule-btn" class="btn btn-primary">Schedule a session</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="group-section">
+        <h3><i class="fas fa-users"></i> Group Members</h3>
+        <div id="members-list" class="members-container">
+          <!-- Members will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Schedule Session Modal Template -->
+  <template id="schedule-session-modal-template">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Schedule Study Session</h3>
+          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <form id="schedule-session-form">
+            <div class="form-group">
+              <label for="session-title">Session Title</label>
+              <input type="text" id="session-title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="session-date">Date</label>
+              <input type="date" id="session-date" name="date" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="session-start-time">Start Time</label>
+                <input type="time" id="session-start-time" name="startTime" required>
+              </div>
+              <div class="form-group">
+                <label for="session-end-time">End Time</label>
+                <input type="time" id="session-end-time" name="endTime" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="session-location">Location</label>
+              <input type="text" id="session-location" name="location" placeholder="Online or physical location">
+            </div>
+            <div class="form-group">
+              <label for="session-description">Description</label>
+              <textarea id="session-description" name="description" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
+          <button class="btn btn-primary" id="submit-session-btn">Schedule Session</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Session Card Template -->
+  <template id="session-card-template">
+    <div class="session-card">
+      <div class="session-card-header">
+        <h3 class="session-title"></h3>
+        <span class="session-date"></span>
+      </div>
+      <div class="session-card-body">
+        <div class="session-time">
+          <i class="fas fa-clock"></i> <span class="start-time"></span> - <span class="end-time"></span>
+        </div>
+        <div class="session-location">
+          <i class="fas fa-map-marker-alt"></i> <span class="location-text"></span>
+        </div>
+        <div class="session-attendees">
+          <i class="fas fa-users"></i> <span class="attendee-count"></span> attending
+        </div>
+      </div>
+      <div class="session-card-footer">
+        <div class="attendance-status">
+          <button class="btn btn-small btn-success attend-btn" data-status="going">Going</button>
+          <button class="btn btn-small btn-danger not-attend-btn" data-status="not-going">Not Going</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Chat Template -->
+  <template id="chat-template">
+    <div class="chat-container">
+      <div class="chat-header">
+        <h3><i class="fas fa-comments"></i> Group Chat</h3>
+        <button class="close-chat-btn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <!-- Messages will be loaded here -->
+      </div>
+      <div class="chat-input">
+        <form id="chat-form">
+          <input type="text" id="message-input" placeholder="Type your message...">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </template>
+
+  <!-- Message Template -->
+  <template id="message-template">
+    <div class="message">
+      <div class="message-sender"></div>
+      <div class="message-content"></div>
+      <div class="message-time"></div>
+    </div>
+  </template>
+
+  <!-- Calendar Template -->
+  <template id="calendar-template">
+    <div class="page-header">
+      <h2>Calendar</h2>
+    </div>
+    <div class="calendar-container">
+      <div class="calendar-controls">
+        <button id="prev-month" class="btn btn-small"><i class="fas fa-chevron-left"></i></button>
+        <h3 id="current-month-year"></h3>
+        <button id="next-month" class="btn btn-small"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div class="calendar-grid" id="calendar-grid">
+        <!-- Calendar will be generated here -->
+      </div>
+      <div class="calendar-events" id="selected-date-events">
+        <h3>Events for <span id="selected-date"></span></h3>
+        <div id="events-list">
+          <!-- Events will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Files Template -->
+  <template id="files-template">
+    <div class="page-header">
+      <h2>Study Files</h2>
+      <button id="upload-file-btn" class="btn btn-primary">
+        <i class="fas fa-upload"></i> Upload File
+      </button>
+    </div>
+    <div class="files-container">
+      <div class="files-filters">
+        <select id="group-filter">
+          <option value="all">All Groups</option>
+          <!-- Group options will be loaded here -->
+        </select>
+      </div>
+      <div id="files-list" class="files-list">
+        <!-- Files will be loaded here -->
+        <div class="empty-state" id="empty-files">
+          <i class="fas fa-file-alt"></i>
+          <p>No files have been shared yet</p>
+          <button id="empty-upload-btn" class="btn btn-primary">Upload your first file</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Upload File Modal Template -->
+  <template id="upload-file-modal-template">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Upload Study File</h3>
+          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <form id="upload-file-form">
+            <div class="form-group">
+              <label for="file-name">File Name</label>
+              <input type="text" id="file-name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="file-group">Study Group</label>
+              <select id="file-group" name="groupId" required>
+                <!-- Group options will be loaded here -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="file-description">Description</label>
+              <textarea id="file-description" name="description" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="file-upload">File</label>
+              <input type="file" id="file-upload" name="file" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
+          <button class="btn btn-primary" id="submit-file-btn">Upload File</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Progress Template -->
+  <template id="progress-template">
+    <div class="page-header">
+      <h2>Progress Tracking</h2>
+      <button id="add-goal-btn" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Goal
+      </button>
+    </div>
+    <div class="progress-container">
+      <div class="progress-overview">
+        <div class="progress-card">
+          <h3>Goal Completion</h3>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="goals-progress-bar"></div>
+            <div class="progress-text" id="goals-progress-text">0%</div>
+          </div>
+          <p><span id="completed-goals">0</span> of <span id="total-goals">0</span> goals completed</p>
+        </div>
+      </div>
+      <div class="goals-list" id="goals-list">
+        <!-- Goals will be loaded here -->
+        <div class="empty-state" id="empty-goals">
+          <i class="fas fa-tasks"></i>
+          <p>You haven't set any goals yet</p>
+          <button id="empty-add-goal-btn" class="btn btn-primary">Add your first goal</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Add Goal Modal Template -->
+  <template id="add-goal-modal-template">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Add Progress Goal</h3>
+          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <form id="add-goal-form">
+            <div class="form-group">
+              <label for="goal-title">Goal Title</label>
+              <input type="text" id="goal-title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="goal-description">Description</label>
+              <textarea id="goal-description" name="description" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="goal-deadline">Target Date</label>
+              <input type="date" id="goal-deadline" name="deadline">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
+          <button class="btn btn-primary" id="submit-goal-btn">Add Goal</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Error Toast Template -->
+  <template id="toast-template">
+    <div class="toast">
+      <div class="toast-content">
+        <i class="toast-icon"></i>
+        <div class="toast-message"></div>
+      </div>
+      <button class="toast-close"><i class="fas fa-times"></i></button>
+    </div>
+  </template>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/websocket.js"></script>
+  <script src="/js/groups.js"></script>
+  <script src="/js/sessions.js"></script>
+  <script src="/js/calendar.js"></script>
+  <script src="/js/files.js"></script>
+  <script src="/js/progress.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
