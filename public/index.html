@@ -3,519 +3,628 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Session Scheduler</title>
+  <title>StudySync - Group Study Scheduler</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
 </head>
 <body>
-  <div id="app">
-    <!-- App content will be dynamically loaded here -->
-    <div id="loading">
-      <div class="spinner"></div>
-      <p>Loading...</p>
+  <!-- Authentication Page -->
+  <div id="auth-page" class="page">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          <div class="card shadow-lg">
+            <div class="card-body p-0">
+              <div class="row g-0">
+                <div class="col-md-5">
+                  <div class="p-5">
+                    <div class="text-center mb-5">
+                      <h1 class="sidebar-brand mb-0">StudySync</h1>
+                      <p class="text-muted">Your Study Group Companion</p>
+                    </div>
+
+                    <!-- Login Form (shown by default) -->
+                    <div id="login-container">
+                      <h2 class="text-center mb-4">Welcome Back!</h2>
+                      <form id="login-form">
+                        <div class="mb-3">
+                          <label for="login-email" class="form-label">Email</label>
+                          <input type="email" class="form-control" id="login-email" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="login-password" class="form-label">Password</label>
+                          <input type="password" class="form-control" id="login-password" required>
+                        </div>
+                        <div class="alert alert-danger d-none" id="login-error"></div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                      </form>
+                      <div class="text-center mt-4">
+                        <p class="mb-0">Don't have an account? <a href="#" id="show-register">Register</a></p>
+                      </div>
+                    </div>
+
+                    <!-- Register Form (hidden initially) -->
+                    <div id="register-container" class="d-none">
+                      <h2 class="text-center mb-4">Create Account</h2>
+                      <form id="register-form">
+                        <div class="mb-3">
+                          <label for="register-name" class="form-label">Full Name</label>
+                          <input type="text" class="form-control" id="register-name" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="register-email" class="form-label">Email</label>
+                          <input type="email" class="form-control" id="register-email" required>
+                        </div>
+                        <div class="mb-3">
+                          <label for="register-password" class="form-label">Password</label>
+                          <input type="password" class="form-control" id="register-password" required>
+                        </div>
+                        <div class="alert alert-danger d-none" id="register-error"></div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                      </form>
+                      <div class="text-center mt-4">
+                        <p class="mb-0">Already have an account? <a href="#" id="show-login">Login</a></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-7">
+                  <div class="auth-hero h-100">
+                    <h1 class="display-5 fw-bold">Welcome to StudySync</h1>
+                    <p class="fs-4">Organize study sessions, share materials, and collaborate with your group members all in one place.</p>
+                    <div class="features mt-4">
+                      <div class="feature mb-3">
+                        <h5><i class="bi bi-calendar-check"></i> Schedule Study Sessions</h5>
+                        <p>Create and manage study group meetings with automatic reminders.</p>
+                      </div>
+                      <div class="feature mb-3">
+                        <h5><i class="bi bi-chat-dots"></i> Group Messaging</h5>
+                        <p>Communicate with your study partners directly within the app.</p>
+                      </div>
+                      <div class="feature">
+                        <h5><i class="bi bi-folder"></i> Share Study Materials</h5>
+                        <p>Upload and organize files, notes, and resources for your group.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="app-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1 class="sidebar-brand">StudySync</h1>
+      </div>
+      <div class="sidebar-menu">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="#" data-page="dashboard">
+              <i class="bi bi-house-door"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-page="people">
+              <i class="bi bi-people"></i> People
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-page="files">
+              <i class="bi bi-file-earmark"></i> Files
+            </a>
+          </li>
+          <li class="nav-item d-md-none">
+            <a class="nav-link" href="#" id="mobile-join-group">
+              <i class="bi bi-people"></i> Join Group
+            </a>
+          </li>
+          <li class="nav-item d-md-none">
+            <a class="nav-link" href="#" id="mobile-create-group">
+              <i class="bi bi-plus-circle"></i> Create Group
+            </a>
+          </li>
+        </ul>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="px-3 mb-3">
+          <h6 class="text-white-50 text-uppercase font-weight-bold small">Your Groups</h6>
+        </div>
+        
+        <ul class="nav flex-column" id="sidebar-groups">
+          <!-- Group links will be populated here -->
+          <li class="nav-item text-center py-3 d-none" id="sidebar-no-groups">
+            <small class="text-white-50">No groups joined yet</small>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sidebar-footer">
+        <div class="user-info d-none" id="user-nav-info">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <div class="me-2 d-flex align-items-center justify-content-center rounded-circle" 
+                   style="width: 36px; height: 36px; background-color: rgba(255,255,255,0.1);">
+                <i class="bi bi-person text-white"></i>
+              </div>
+              <div>
+                <span class="user-name d-block text-white small fw-bold"></span>
+                <small class="text-white-50 user-email"></small>
+              </div>
+            </div>
+            <button class="btn btn-sm btn-outline-light rounded-circle" id="logout-btn">
+              <i class="bi bi-box-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+      <!-- Topbar -->
+      <div class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 py-2">
+        <div class="container-fluid">
+          <button class="sidebar-toggler" id="sidebar-toggle">
+            <i class="bi bi-list"></i>
+          </button>
+          
+          <div class="d-none d-md-flex">
+            <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#join-group-modal">
+              <i class="bi bi-people me-1"></i> Join Group
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-group-modal">
+              <i class="bi bi-plus-circle me-1"></i> Create Group
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Page Container -->
+      <div class="container-fluid px-4">
+
+      <!-- Dashboard Page -->
+      <div id="dashboard-page" class="page d-none">
+        <h1>Dashboard</h1>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card mb-4">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">My Study Groups</h5>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#create-group-modal">
+                  Create Group
+                </button>
+              </div>
+              <div class="card-body">
+                <div id="group-list" class="row row-cols-1 row-cols-md-2 g-4">
+                  <!-- Groups will be populated here -->
+                </div>
+                <div id="no-groups-message" class="text-center p-4 d-none">
+                  <p class="text-muted">You haven't joined any study groups yet.</p>
+                  <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#join-group-modal">
+                    Join a Group
+                  </button>
+                  <p class="mt-2">or</p>
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-group-modal">
+                    Create a Group
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0">Upcoming Meetings</h5>
+              </div>
+              <div class="card-body">
+                <div id="upcoming-meetings">
+                  <!-- Upcoming meetings will be populated here -->
+                </div>
+                <div id="no-meetings-message" class="text-center py-4 d-none">
+                  <p class="text-muted">No upcoming meetings scheduled.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- People Page -->
+      <div id="people-page" class="page d-none">
+        <h1>Users & Collaborators</h1>
+        <div class="card">
+          <div class="card-body">
+            <div class="mb-4">
+              <p class="text-muted">
+                Browse all users registered on the platform who might be potential collaborators for your study groups.
+              </p>
+            </div>
+            <div id="people-list">
+              <!-- Users list will be populated here by people.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Files Page -->
+      <div id="files-page" class="page d-none">
+        <div class="files-header">
+          <h1>Study Materials</h1>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upload-file-modal">
+            <i class="bi bi-cloud-upload me-2"></i> Upload New File
+          </button>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="files-filter mb-4">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="file-search" placeholder="Search files...">
+              </div>
+              <select class="form-select" id="file-category-filter" style="width: auto;">
+                <option value="all">All Categories</option>
+                <option value="notes">Lecture Notes</option>
+                <option value="handout">Handout</option>
+                <option value="assignment">Assignment</option>
+                <option value="reference">Reference Material</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div class="file-browser">
+              <div class="file-list-header">
+                <div>File Name</div>
+                <div>Category</div>
+                <div>Uploaded By</div>
+                <div>Actions</div>
+              </div>
+              <div id="all-files-list">
+                <!-- Files will be populated here -->
+              </div>
+              <div id="no-files-message" class="text-center py-5 d-none">
+                <i class="bi bi-file-earmark-x display-4 text-muted mb-3"></i>
+                <p class="text-muted">No files have been uploaded yet</p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upload-file-modal">
+                  <i class="bi bi-cloud-upload me-2"></i> Upload Your First File
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group Page -->
+      <div id="group-page" class="page d-none">
+        <div class="d-flex align-items-center mb-4">
+          <button class="btn btn-outline-secondary btn-sm me-3" id="back-to-dashboard">
+            <i class="bi bi-arrow-left"></i> Back
+          </button>
+          <h1 class="mb-0 group-name">Group Name</h1>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card mb-4">
+              <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" id="group-tabs">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#meetings-tab">Meetings</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#files-tab">Files</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#chat-tab">Chat</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="tab-pane fade show active" id="meetings-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <h5>Upcoming Meetings</h5>
+                      <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#schedule-meeting-modal">
+                        Schedule Meeting
+                      </button>
+                    </div>
+                    <div id="group-meetings">
+                      <!-- Group meetings will be populated here -->
+                    </div>
+                    <div id="no-group-meetings" class="text-center py-4 d-none">
+                      <p class="text-muted">No meetings scheduled for this group yet.</p>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="files-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <h5>Study Materials</h5>
+                      <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#upload-file-modal">
+                        Upload File
+                      </button>
+                    </div>
+                    <div id="group-files" class="row row-cols-1 row-cols-md-2 g-4">
+                      <!-- Group files will be populated here -->
+                    </div>
+                    <div id="no-group-files" class="text-center py-4 d-none">
+                      <p class="text-muted">No files have been uploaded to this group yet.</p>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="chat-tab">
+                    <div class="chat-container">
+                      <div class="chat-header">
+                        <h5><i class="bi bi-chat-dots me-2"></i> Group Chat</h5>
+                      </div>
+                      <div class="chat-messages" id="chat-messages">
+                        <!-- Chat messages will be populated here -->
+                      </div>
+                      <div class="chat-input-container">
+                        <form id="chat-form" class="chat-form">
+                          <input type="text" class="form-control" id="chat-input" placeholder="Type a message..." required>
+                          <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i> Send
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5>Group Info</h5>
+              </div>
+              <div class="card-body">
+                <p class="group-description"></p>
+                <div class="group-details mb-3">
+                  <div class="mb-2"><strong>Subject:</strong> <span class="group-subject"></span></div>
+                  <div><strong>Created By:</strong> <span class="group-creator"></span></div>
+                </div>
+                <div>
+                  <h6>Invite Code</h6>
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control group-invite-code" readonly>
+                    <button class="btn btn-outline-secondary copy-invite-code">Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h5>Members</h5>
+              </div>
+              <div class="card-body">
+                <ul class="list-group" id="group-members">
+                  <!-- Group members will be populated here -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Group Modal -->
+    <div class="modal fade" id="create-group-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Create Study Group</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="create-group-form">
+              <div class="mb-3">
+                <label for="group-name" class="form-label">Group Name</label>
+                <input type="text" class="form-control" id="group-name" required>
+              </div>
+              <div class="mb-3">
+                <label for="group-subject" class="form-label">Subject</label>
+                <input type="text" class="form-control" id="group-subject" required>
+              </div>
+              <div class="mb-3">
+                <label for="group-description" class="form-label">Description</label>
+                <textarea class="form-control" id="group-description" rows="3"></textarea>
+              </div>
+              <div class="alert alert-danger d-none" id="create-group-error"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="create-group-submit">Create Group</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Join Group Modal -->
+    <div class="modal fade" id="join-group-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Join Study Group</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="join-group-form">
+              <div class="mb-3">
+                <label for="invite-code" class="form-label">Invite Code</label>
+                <input type="text" class="form-control" id="invite-code" required>
+                <div class="form-text">Enter the invite code provided by the group administrator.</div>
+              </div>
+              <div class="alert alert-danger d-none" id="join-group-error"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="join-group-submit">Join Group</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Meeting Modal -->
+    <div class="modal fade" id="schedule-meeting-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i> Schedule Meeting</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="schedule-meeting-form">
+              <div class="mb-3">
+                <label for="meeting-title" class="form-label">Meeting Title</label>
+                <input type="text" class="form-control" id="meeting-title" placeholder="Topic or purpose of the meeting" required>
+              </div>
+              <div class="mb-3">
+                <label for="meeting-description" class="form-label">Description</label>
+                <textarea class="form-control" id="meeting-description" rows="3" placeholder="Include agenda items, preparation tasks, or any other details"></textarea>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label for="meeting-date" class="form-label">Date</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                    <input type="date" class="form-control" id="meeting-date" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="meeting-time" class="form-label">Time</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                    <input type="time" class="form-control" id="meeting-time" required>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="meeting-duration" class="form-label">Duration</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-hourglass-split"></i></span>
+                  <input type="number" class="form-control" id="meeting-duration" min="15" step="15" value="60" required>
+                  <span class="input-group-text">minutes</span>
+                </div>
+                <div class="form-text">Select a duration in 15-minute increments</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Common Durations</label>
+                <div class="duration-presets d-flex gap-2">
+                  <button type="button" class="btn btn-outline-secondary duration-preset" data-duration="30">30min</button>
+                  <button type="button" class="btn btn-outline-secondary duration-preset" data-duration="45">45min</button>
+                  <button type="button" class="btn btn-outline-secondary duration-preset" data-duration="60">1hr</button>
+                  <button type="button" class="btn btn-outline-secondary duration-preset" data-duration="90">1hr 30min</button>
+                  <button type="button" class="btn btn-outline-secondary duration-preset" data-duration="120">2hrs</button>
+                </div>
+              </div>
+              <div class="alert alert-danger d-none" id="schedule-meeting-error"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="schedule-meeting-submit">
+              <i class="bi bi-calendar-check me-2"></i> Schedule Meeting
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload File Modal -->
+    <div class="modal fade" id="upload-file-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-cloud-upload me-2"></i> Upload Study Material</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="upload-file-form">
+              <div class="mb-4">
+                <label for="file-input" class="form-label">Select File</label>
+                <div class="file-upload-area text-center p-4 mb-3 border border-dashed rounded bg-light">
+                  <i class="bi bi-file-earmark-arrow-up display-4 text-muted mb-3"></i>
+                  <p class="text-muted mb-2">Drag and drop a file here or click to browse</p>
+                  <input type="file" class="form-control" id="file-input" required>
+                </div>
+                <div class="file-preview d-none">
+                  <div class="d-flex align-items-center p-3 border rounded">
+                    <i class="bi bi-file-earmark me-3 file-preview-icon"></i>
+                    <div class="flex-grow-1">
+                      <div class="file-preview-name fw-bold"></div>
+                      <div class="file-preview-size text-muted small"></div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger file-remove-btn">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="file-category" class="form-label">Category</label>
+                <select class="form-select" id="file-category">
+                  <option value="notes">Lecture Notes</option>
+                  <option value="handout">Handout</option>
+                  <option value="assignment">Assignment</option>
+                  <option value="reference">Reference Material</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="file-description" class="form-label">Description</label>
+                <textarea class="form-control" id="file-description" rows="3" placeholder="Briefly describe this material and its relevance..."></textarea>
+              </div>
+              <div class="alert alert-danger d-none" id="upload-file-error"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="upload-file-submit">
+              <i class="bi bi-cloud-upload me-2"></i> Upload
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 404 Page -->
+    <div id="not-found-page" class="page d-none">
+      <div class="text-center py-5">
+        <h1 class="display-1">404</h1>
+        <h2>Page Not Found</h2>
+        <p>The page you're looking for doesn't exist or has been moved.</p>
+        <button class="btn btn-primary" id="go-to-dashboard">Back to Dashboard</button>
+      </div>
     </div>
   </div>
 
-  <!-- Templates -->
-  <!-- Login Template -->
-  <template id="login-template">
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="auth-header">
-          <h1>Study Session Scheduler</h1>
-          <p>Sign in to your account</p>
-        </div>
-        <form id="login-form" class="auth-form">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Sign In</button>
-          </div>
-          <div class="auth-links">
-            <p>Don't have an account? <a href="#" id="register-link">Register</a></p>
-          </div>
-        </form>
-      </div>
-    </div>
-  </template>
-
-  <!-- Register Template -->
-  <template id="register-template">
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="auth-header">
-          <h1>Study Session Scheduler</h1>
-          <p>Create a new account</p>
-        </div>
-        <form id="register-form" class="auth-form">
-          <div class="form-group">
-            <label for="reg-name">Full Name</label>
-            <input type="text" id="reg-name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="reg-email">Email</label>
-            <input type="email" id="reg-email" name="email" required>
-          </div>
-          <div class="form-group">
-            <label for="reg-username">Username</label>
-            <input type="text" id="reg-username" name="username" required>
-          </div>
-          <div class="form-group">
-            <label for="reg-password">Password</label>
-            <input type="password" id="reg-password" name="password" required>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Register</button>
-          </div>
-          <div class="auth-links">
-            <p>Already have an account? <a href="#" id="login-link">Login</a></p>
-          </div>
-        </form>
-      </div>
-    </div>
-  </template>
-
-  <!-- Dashboard Template -->
-  <template id="dashboard-template">
-    <div class="dashboard">
-      <header class="main-header">
-        <div class="header-content">
-          <h1>Study Session Scheduler</h1>
-          <div class="user-menu">
-            <span id="user-name"></span>
-            <div class="online-indicator" id="online-status">
-              <div class="online-dot"></div>
-              <span class="online-text">Online</span>
-            </div>
-            <button id="logout-btn" class="btn btn-small">Logout</button>
-          </div>
-        </div>
-      </header>
-      
-      <div class="main-container">
-        <nav class="sidebar">
-          <ul class="nav-menu">
-            <li class="nav-item active" data-page="groups">
-              <a href="#"><i class="fas fa-users"></i> Study Groups</a>
-            </li>
-            <li class="nav-item" data-page="calendar">
-              <a href="#"><i class="fas fa-calendar-alt"></i> Calendar</a>
-            </li>
-            <li class="nav-item" data-page="files">
-              <a href="#"><i class="fas fa-file-alt"></i> Files</a>
-            </li>
-            <li class="nav-item" data-page="progress">
-              <a href="#"><i class="fas fa-chart-line"></i> Progress</a>
-            </li>
-          </ul>
-        </nav>
-        
-        <main class="content" id="main-content">
-          <!-- Content will be loaded here -->
-        </main>
-      </div>
-    </div>
-  </template>
-
-  <!-- Study Groups Template -->
-  <template id="groups-template">
-    <div class="page-header">
-      <h2>My Study Groups</h2>
-      <button id="create-group-btn" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Create Group
-      </button>
-    </div>
-    
-    <div class="groups-container" id="groups-list">
-      <!-- Groups will be loaded here -->
-      <div class="empty-state" id="empty-groups">
-        <i class="fas fa-users"></i>
-        <p>You haven't joined any study groups yet</p>
-        <button id="empty-create-group-btn" class="btn btn-primary">Create your first group</button>
-      </div>
-    </div>
-  </template>
-
-  <!-- Group Card Template -->
-  <template id="group-card-template">
-    <div class="group-card">
-      <div class="group-card-header">
-        <h3 class="group-name"></h3>
-        <span class="group-subject"></span>
-      </div>
-      <div class="group-card-body">
-        <div class="group-info">
-          <div class="info-item">
-            <i class="fas fa-users"></i>
-            <span class="member-count"></span> members
-          </div>
-          <div class="info-item">
-            <i class="fas fa-calendar-day"></i>
-            <span class="next-session"></span>
-          </div>
-        </div>
-      </div>
-      <div class="group-card-footer">
-        <button class="btn btn-primary view-group-btn">View Group</button>
-      </div>
-    </div>
-  </template>
-
-  <!-- Create Group Modal Template -->
-  <template id="create-group-modal-template">
-    <div class="modal-overlay">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Create New Study Group</h3>
-          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-          <form id="create-group-form">
-            <div class="form-group">
-              <label for="group-name">Group Name</label>
-              <input type="text" id="group-name" name="name" required>
-            </div>
-            <div class="form-group">
-              <label for="group-subject">Subject/Course</label>
-              <input type="text" id="group-subject" name="subject" required>
-            </div>
-            <div class="form-group">
-              <label for="group-description">Description</label>
-              <textarea id="group-description" name="description" rows="3"></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
-          <button class="btn btn-primary" id="submit-group-btn">Create Group</button>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Group Details Template -->
-  <template id="group-details-template">
-    <div class="group-details">
-      <div class="group-header">
-        <div class="back-button">
-          <a href="#" id="back-to-groups"><i class="fas fa-arrow-left"></i> Back to Groups</a>
-        </div>
-        <h2 class="group-title"></h2>
-        <p class="group-description"></p>
-      </div>
-      
-      <div class="group-actions">
-        <button id="schedule-session-btn" class="btn btn-primary">
-          <i class="fas fa-calendar-plus"></i> Schedule Session
-        </button>
-        <button id="share-files-btn" class="btn btn-secondary">
-          <i class="fas fa-file-upload"></i> Share Files
-        </button>
-        <button id="chat-btn" class="btn btn-secondary">
-          <i class="fas fa-comments"></i> Group Chat
-        </button>
-      </div>
-      
-      <div class="group-section">
-        <h3><i class="fas fa-calendar-alt"></i> Upcoming Sessions</h3>
-        <div id="sessions-list" class="sessions-container">
-          <!-- Sessions will be loaded here -->
-          <div class="empty-state" id="empty-sessions">
-            <i class="fas fa-calendar-alt"></i>
-            <p>No upcoming sessions scheduled</p>
-            <button id="empty-schedule-btn" class="btn btn-primary">Schedule a session</button>
-          </div>
-        </div>
-      </div>
-      
-      <div class="group-section">
-        <h3><i class="fas fa-users"></i> Group Members</h3>
-        <div id="members-list" class="members-container">
-          <!-- Members will be loaded here -->
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Schedule Session Modal Template -->
-  <template id="schedule-session-modal-template">
-    <div class="modal-overlay">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Schedule Study Session</h3>
-          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-          <form id="schedule-session-form">
-            <div class="form-group">
-              <label for="session-title">Session Title</label>
-              <input type="text" id="session-title" name="title" required>
-            </div>
-            <div class="form-group">
-              <label for="session-date">Date</label>
-              <input type="date" id="session-date" name="date" required>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="session-start-time">Start Time</label>
-                <input type="time" id="session-start-time" name="startTime" required>
-              </div>
-              <div class="form-group">
-                <label for="session-end-time">End Time</label>
-                <input type="time" id="session-end-time" name="endTime" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="session-location">Location</label>
-              <input type="text" id="session-location" name="location" placeholder="Online or physical location">
-            </div>
-            <div class="form-group">
-              <label for="session-description">Description</label>
-              <textarea id="session-description" name="description" rows="3"></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
-          <button class="btn btn-primary" id="submit-session-btn">Schedule Session</button>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Session Card Template -->
-  <template id="session-card-template">
-    <div class="session-card">
-      <div class="session-card-header">
-        <h3 class="session-title"></h3>
-        <span class="session-date"></span>
-      </div>
-      <div class="session-card-body">
-        <div class="session-time">
-          <i class="fas fa-clock"></i> <span class="start-time"></span> - <span class="end-time"></span>
-        </div>
-        <div class="session-location">
-          <i class="fas fa-map-marker-alt"></i> <span class="location-text"></span>
-        </div>
-        <div class="session-attendees">
-          <i class="fas fa-users"></i> <span class="attendee-count"></span> attending
-        </div>
-      </div>
-      <div class="session-card-footer">
-        <div class="attendance-status">
-          <button class="btn btn-small btn-success attend-btn" data-status="going">Going</button>
-          <button class="btn btn-small btn-danger not-attend-btn" data-status="not-going">Not Going</button>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Chat Template -->
-  <template id="chat-template">
-    <div class="chat-container">
-      <div class="chat-header">
-        <h3><i class="fas fa-comments"></i> Group Chat</h3>
-        <button class="close-chat-btn"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="chat-messages" id="chat-messages">
-        <!-- Messages will be loaded here -->
-      </div>
-      <div class="chat-input">
-        <form id="chat-form">
-          <input type="text" id="message-input" placeholder="Type your message...">
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-paper-plane"></i>
-          </button>
-        </form>
-      </div>
-    </div>
-  </template>
-
-  <!-- Message Template -->
-  <template id="message-template">
-    <div class="message">
-      <div class="message-sender"></div>
-      <div class="message-content"></div>
-      <div class="message-time"></div>
-    </div>
-  </template>
-
-  <!-- Calendar Template -->
-  <template id="calendar-template">
-    <div class="page-header">
-      <h2>Calendar</h2>
-    </div>
-    <div class="calendar-container">
-      <div class="calendar-controls">
-        <button id="prev-month" class="btn btn-small"><i class="fas fa-chevron-left"></i></button>
-        <h3 id="current-month-year"></h3>
-        <button id="next-month" class="btn btn-small"><i class="fas fa-chevron-right"></i></button>
-      </div>
-      <div class="calendar-grid" id="calendar-grid">
-        <!-- Calendar will be generated here -->
-      </div>
-      <div class="calendar-events" id="selected-date-events">
-        <h3>Events for <span id="selected-date"></span></h3>
-        <div id="events-list">
-          <!-- Events will be loaded here -->
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Files Template -->
-  <template id="files-template">
-    <div class="page-header">
-      <h2>Study Files</h2>
-      <button id="upload-file-btn" class="btn btn-primary">
-        <i class="fas fa-upload"></i> Upload File
-      </button>
-    </div>
-    <div class="files-container">
-      <div class="files-filters">
-        <select id="group-filter">
-          <option value="all">All Groups</option>
-          <!-- Group options will be loaded here -->
-        </select>
-      </div>
-      <div id="files-list" class="files-list">
-        <!-- Files will be loaded here -->
-        <div class="empty-state" id="empty-files">
-          <i class="fas fa-file-alt"></i>
-          <p>No files have been shared yet</p>
-          <button id="empty-upload-btn" class="btn btn-primary">Upload your first file</button>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Upload File Modal Template -->
-  <template id="upload-file-modal-template">
-    <div class="modal-overlay">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Upload Study File</h3>
-          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-          <form id="upload-file-form">
-            <div class="form-group">
-              <label for="file-name">File Name</label>
-              <input type="text" id="file-name" name="name" required>
-            </div>
-            <div class="form-group">
-              <label for="file-group">Study Group</label>
-              <select id="file-group" name="groupId" required>
-                <!-- Group options will be loaded here -->
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="file-description">Description</label>
-              <textarea id="file-description" name="description" rows="2"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="file-upload">File</label>
-              <input type="file" id="file-upload" name="file" required>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
-          <button class="btn btn-primary" id="submit-file-btn">Upload File</button>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Progress Template -->
-  <template id="progress-template">
-    <div class="page-header">
-      <h2>Progress Tracking</h2>
-      <button id="add-goal-btn" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Add Goal
-      </button>
-    </div>
-    <div class="progress-container">
-      <div class="progress-overview">
-        <div class="progress-card">
-          <h3>Goal Completion</h3>
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="goals-progress-bar"></div>
-            <div class="progress-text" id="goals-progress-text">0%</div>
-          </div>
-          <p><span id="completed-goals">0</span> of <span id="total-goals">0</span> goals completed</p>
-        </div>
-      </div>
-      <div class="goals-list" id="goals-list">
-        <!-- Goals will be loaded here -->
-        <div class="empty-state" id="empty-goals">
-          <i class="fas fa-tasks"></i>
-          <p>You haven't set any goals yet</p>
-          <button id="empty-add-goal-btn" class="btn btn-primary">Add your first goal</button>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Add Goal Modal Template -->
-  <template id="add-goal-modal-template">
-    <div class="modal-overlay">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Add Progress Goal</h3>
-          <button class="close-modal-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-          <form id="add-goal-form">
-            <div class="form-group">
-              <label for="goal-title">Goal Title</label>
-              <input type="text" id="goal-title" name="title" required>
-            </div>
-            <div class="form-group">
-              <label for="goal-description">Description</label>
-              <textarea id="goal-description" name="description" rows="2"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="goal-deadline">Target Date</label>
-              <input type="date" id="goal-deadline" name="deadline">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary cancel-modal-btn">Cancel</button>
-          <button class="btn btn-primary" id="submit-goal-btn">Add Goal</button>
-        </div>
-      </div>
-    </div>
-  </template>
-
-  <!-- Error Toast Template -->
-  <template id="toast-template">
-    <div class="toast">
-      <div class="toast-content">
-        <i class="toast-icon"></i>
-        <div class="toast-message"></div>
-      </div>
-      <button class="toast-close"><i class="fas fa-times"></i></button>
-    </div>
-  </template>
-
-  <!-- Scripts -->
-  <script src="/js/api.js"></script>
-  <script src="/js/utils.js"></script>
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Custom JS -->
   <script src="/js/auth.js"></script>
-  <script src="/js/websocket.js"></script>
-  <script src="/js/groups.js"></script>
-  <script src="/js/sessions.js"></script>
-  <script src="/js/calendar.js"></script>
-  <script src="/js/files.js"></script>
-  <script src="/js/progress.js"></script>
   <script src="/js/app.js"></script>
+  <script src="/js/people.js"></script>
+  <script src="/js/groups.js"></script>
+  <script src="/js/meetings.js"></script>
+  <script src="/js/files.js"></script>
+  <script src="/js/chat.js"></script>
 </body>
 </html>
